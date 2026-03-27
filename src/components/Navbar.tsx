@@ -3,13 +3,30 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 
+interface UserInfo {
+  username: string;
+  avatarUrl: string | null;
+  level: number;
+  league: string;
+}
+
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [user, setUser] = useState<UserInfo | null>(null);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll, { passive: true });
+
+    // Check auth
+    fetch("/api/auth/me")
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (data?.user) setUser(data.user);
+      })
+      .catch(() => {});
+
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -32,10 +49,10 @@ export default function Navbar() {
         {/* Desktop links */}
         <div className="hidden md:flex items-center gap-1">
           {[
-            { href: "#how-it-works", label: "How it Works" },
-            { href: "#leaderboard", label: "Leaderboard" },
-            { href: "#leagues", label: "Leagues" },
-            { href: "#scoring", label: "Scoring" },
+            { href: "/#how-it-works", label: "How it Works" },
+            { href: "/#leaderboard", label: "Leaderboard" },
+            { href: "/#leagues", label: "Leagues" },
+            { href: "/#scoring", label: "Scoring" },
           ].map((link) => (
             <a
               key={link.href}
@@ -47,14 +64,46 @@ export default function Navbar() {
           ))}
         </div>
 
-        {/* CTA */}
+        {/* Right side */}
         <div className="hidden md:flex items-center gap-3">
-          <Link
-            href="/rate"
-            className="relative px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 text-white text-sm font-bold hover:from-blue-400 hover:to-blue-500 transition-all press-effect btn-shine shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40"
-          >
-            Get Your Score
-          </Link>
+          {user ? (
+            <div className="flex items-center gap-3">
+              <Link
+                href={`/profile/${user.username}`}
+                className="flex items-center gap-2 px-3 py-1.5 rounded-xl hover:bg-white/[0.05] transition-all press-effect"
+              >
+                {user.avatarUrl ? (
+                  <img src={user.avatarUrl} alt="" className="w-7 h-7 rounded-lg object-cover" />
+                ) : (
+                  <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-500/30 to-blue-600/20 flex items-center justify-center text-xs font-black text-blue-400">
+                    {user.username[0].toUpperCase()}
+                  </div>
+                )}
+                <span className="text-sm font-medium text-[var(--text-secondary)]">@{user.username}</span>
+              </Link>
+              <Link
+                href="/rate"
+                className="relative px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 text-white text-sm font-bold hover:from-blue-400 hover:to-blue-500 transition-all press-effect btn-shine shadow-lg shadow-blue-500/25"
+              >
+                Rate
+              </Link>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <a
+                href="/api/auth/google"
+                className="px-4 py-2 rounded-xl text-sm font-medium text-[var(--text-secondary)] hover:text-white hover:bg-white/[0.05] transition-all press-effect"
+              >
+                Sign in
+              </a>
+              <Link
+                href="/rate"
+                className="relative px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 text-white text-sm font-bold hover:from-blue-400 hover:to-blue-500 transition-all press-effect btn-shine shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40"
+              >
+                Get Your Score
+              </Link>
+            </div>
+          )}
         </div>
 
         {/* Mobile hamburger */}
@@ -68,13 +117,13 @@ export default function Navbar() {
       </div>
 
       {/* Mobile menu */}
-      <div className={`md:hidden overflow-hidden transition-all duration-400 ${menuOpen ? "max-h-80 opacity-100" : "max-h-0 opacity-0"}`}>
+      <div className={`md:hidden overflow-hidden transition-all duration-400 ${menuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}`}>
         <div className="px-5 pb-5 pt-2 space-y-1 border-t border-[var(--border)]">
           {[
-            { href: "#how-it-works", label: "How it Works" },
-            { href: "#leaderboard", label: "Leaderboard" },
-            { href: "#leagues", label: "Leagues" },
-            { href: "#scoring", label: "Scoring" },
+            { href: "/#how-it-works", label: "How it Works" },
+            { href: "/#leaderboard", label: "Leaderboard" },
+            { href: "/#leagues", label: "Leagues" },
+            { href: "/#scoring", label: "Scoring" },
           ].map((link) => (
             <a
               key={link.href}
@@ -85,13 +134,41 @@ export default function Navbar() {
               {link.label}
             </a>
           ))}
-          <Link
-            href="/rate"
-            className="block px-4 py-3 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-blue-500 to-blue-600 text-center mt-2"
-            onClick={() => setMenuOpen(false)}
-          >
-            Get Your Score
-          </Link>
+          {user ? (
+            <>
+              <Link
+                href={`/profile/${user.username}`}
+                className="block px-4 py-3 rounded-xl text-sm font-medium text-[var(--text-secondary)] hover:text-white hover:bg-white/[0.05] transition-all"
+                onClick={() => setMenuOpen(false)}
+              >
+                My Profile
+              </Link>
+              <Link
+                href="/rate"
+                className="block px-4 py-3 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-blue-500 to-blue-600 text-center mt-2"
+                onClick={() => setMenuOpen(false)}
+              >
+                Rate My Car
+              </Link>
+            </>
+          ) : (
+            <>
+              <a
+                href="/api/auth/google"
+                className="block px-4 py-3 rounded-xl text-sm font-medium text-[var(--text-secondary)] hover:text-white hover:bg-white/[0.05] transition-all"
+                onClick={() => setMenuOpen(false)}
+              >
+                Sign in with Google
+              </a>
+              <Link
+                href="/rate"
+                className="block px-4 py-3 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-blue-500 to-blue-600 text-center mt-2"
+                onClick={() => setMenuOpen(false)}
+              >
+                Get Your Score
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </nav>

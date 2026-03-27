@@ -27,7 +27,7 @@ export default function ScoreRing({ score, size = 160, strokeWidth = 8, animate 
     const timer = setTimeout(() => {
       setMounted(true);
       let current = 0;
-      const step = score / 60; // 60 frames
+      const step = score / 60;
       const interval = setInterval(() => {
         current += step;
         if (current >= score) {
@@ -43,15 +43,21 @@ export default function ScoreRing({ score, size = 160, strokeWidth = 8, animate 
   }, [score, animate, delay]);
 
   return (
-    <div className="relative inline-flex items-center justify-center" style={{ width: size, height: size }}>
-      <svg width={size} height={size} className="transform -rotate-90">
+    <div className="relative inline-flex items-center justify-center group" style={{ width: size, height: size }}>
+      {/* Glow effect behind the ring */}
+      <div
+        className="absolute inset-0 rounded-full opacity-20 blur-xl transition-opacity group-hover:opacity-30"
+        style={{ background: color }}
+      />
+
+      <svg width={size} height={size} className="transform -rotate-90 relative z-10">
         {/* Background ring */}
         <circle
           cx={size / 2}
           cy={size / 2}
           r={radius}
           fill="none"
-          stroke="rgba(255,255,255,0.06)"
+          stroke="rgba(148, 163, 184, 0.06)"
           strokeWidth={strokeWidth}
         />
         {/* Score ring */}
@@ -66,16 +72,23 @@ export default function ScoreRing({ score, size = 160, strokeWidth = 8, animate 
           strokeDasharray={circumference}
           strokeDashoffset={circumference - progress}
           style={{
-            transition: mounted ? "stroke-dashoffset 1s cubic-bezier(0.25, 0.46, 0.45, 0.94)" : "none",
-            filter: `drop-shadow(0 0 8px ${color}50)`,
+            transition: mounted ? "stroke-dashoffset 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)" : "none",
+            filter: `drop-shadow(0 0 10px ${color}40)`,
           }}
         />
       </svg>
-      <div className="absolute flex flex-col items-center">
-        <span className="text-4xl font-black tabular-nums" style={{ color }}>
+
+      <div className="absolute flex flex-col items-center z-10">
+        <span
+          className="font-black tabular-nums transition-transform group-hover:scale-110"
+          style={{ color, fontSize: size * 0.22 }}
+        >
           {displayScore}
         </span>
-        <span className="text-[10px] uppercase tracking-widest font-bold mt-1" style={{ color }}>
+        <span
+          className="uppercase tracking-[0.15em] font-bold"
+          style={{ color, fontSize: Math.max(8, size * 0.06) }}
+        >
           {label}
         </span>
       </div>
