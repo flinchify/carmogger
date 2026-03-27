@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import LeagueBadge from "@/components/LeagueBadge";
-
 import { getScoreColor } from "@/lib/ai-scoring";
 
 interface LeaderboardEntry {
@@ -41,110 +40,89 @@ export default function LeaderboardPage() {
   }, [tab]);
 
   return (
-    <>
+    <div style={{ width: "100%", minHeight: "100vh" }}>
       <Navbar />
 
-      <main className="relative z-10 min-h-screen pt-24 pb-16 px-4">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-10">
-            <h1 className="text-4xl sm:text-5xl font-black mb-3">
-              Leader<span className="text-[var(--accent)]">board</span>
-            </h1>
-            <p className="text-[var(--text-secondary)]">
-              The highest rated cars on CarMog. Updated in real time.
-            </p>
-          </div>
+      {/* Hero header */}
+      <section style={{ width: "100%", paddingTop: 120, paddingBottom: 40, position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", top: 0, left: "50%", transform: "translateX(-50%)", width: 600, height: 300, background: "radial-gradient(ellipse, rgba(59,130,246,0.08) 0%, transparent 70%)", pointerEvents: "none" }} />
+        <div className="ctr" style={{ textAlign: "center", position: "relative" }}>
+          <p className="fade-up d1 mono" style={{ fontSize: 11, color: "#3b82f6", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 16 }}>[ Leaderboard ]</p>
+          <h1 className="fade-up d2" style={{ fontSize: "clamp(32px, 5vw, 48px)", fontWeight: 800, color: "white", lineHeight: 1.05 }}>
+            Top rated.
+          </h1>
+          <p className="fade-up d3" style={{ marginTop: 16, fontSize: 14, color: "#a1a1aa", maxWidth: 460, marginLeft: "auto", marginRight: "auto" }}>
+            The highest rated cars on CarMogger. Updated in real time.
+          </p>
+        </div>
+      </section>
 
-          {/* Tabs */}
-          <div className="flex items-center justify-center gap-2 mb-10">
+      {/* Tabs */}
+      <section style={{ width: "100%", paddingBottom: 16 }}>
+        <div className="ctr" style={{ display: "flex", justifyContent: "center" }}>
+          <div style={{ display: "flex", gap: 4, borderRadius: 8, background: "#111114", border: "1px solid rgba(255,255,255,0.07)", padding: 2 }}>
             {[
               { key: "score" as Tab, label: "Top Scores" },
               { key: "views" as Tab, label: "Most Viewed" },
               { key: "xp" as Tab, label: "Top XP" },
             ].map((t) => (
-              <button
-                key={t.key}
-                onClick={() => setTab(t.key)}
-                className={`px-5 py-2 rounded-full text-sm font-medium transition-all press-effect ${
-                  tab === t.key
-                    ? "bg-[var(--accent)] text-white"
-                    : "bg-[var(--bg-card)] text-[var(--text-secondary)] hover:text-white border border-[var(--border)]"
-                }`}
-              >
+              <button key={t.key} className="mono" onClick={() => setTab(t.key)} style={{ fontSize: 11, padding: "6px 14px", borderRadius: 6, background: tab === t.key ? "rgba(59,130,246,0.1)" : "transparent", color: tab === t.key ? "#60a5fa" : "#3f3f46", border: "none", cursor: "pointer", transition: "all 0.15s" }}>
                 {t.label}
               </button>
             ))}
           </div>
+        </div>
+      </section>
 
-          {/* List */}
+      {/* List */}
+      <section style={{ width: "100%", paddingTop: 24, paddingBottom: 80 }}>
+        <div className="ctr">
           {loading ? (
-            <div className="space-y-4">
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               {Array.from({ length: 10 }).map((_, i) => (
-                <div key={i} className="skeleton h-20 rounded-2xl" />
+                <div key={i} style={{ height: 64, borderRadius: 12, background: "#111114", border: "1px solid rgba(255,255,255,0.07)" }} />
               ))}
             </div>
           ) : entries.length === 0 ? (
-            <div className="text-center py-20">
-              <p className="text-[var(--text-muted)] text-lg">No cars rated yet. Be the first.</p>
-              <a href="/rate" className="inline-block mt-4 px-6 py-3 rounded-full bg-[var(--accent)] text-white font-bold press-effect">
+            <div style={{ borderRadius: 12, background: "#111114", border: "1px solid rgba(255,255,255,0.07)", padding: "64px 20px", textAlign: "center" }}>
+              <p style={{ fontSize: 15, color: "#52525b", marginBottom: 16 }}>No cars rated yet. Be the first.</p>
+              <a href="/rate" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", height: 40, padding: "0 20px", borderRadius: 8, background: "#3b82f6", color: "white", fontSize: 14, fontWeight: 500, textDecoration: "none" }}>
                 Rate Your Car
               </a>
             </div>
           ) : (
-            <div className="space-y-3">
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
               {entries.map((entry, i) => {
                 const rank = i + 1;
                 const color = getScoreColor(entry.carmog_score);
                 const isTop3 = rank <= 3;
-
                 return (
-                  <div
-                    key={entry.id}
-                    className={`flex items-center gap-4 p-4 rounded-2xl bg-[var(--bg-card)] border transition-all hover-tilt ${
-                      isTop3
-                        ? "border-[var(--border-hover)]"
-                        : "border-[var(--border)]"
-                    }`}
-                    style={isTop3 ? { boxShadow: `0 0 20px ${color}10` } : {}}
-                  >
-                    {/* Rank */}
-                    <div
-                      className="w-10 h-10 rounded-full flex items-center justify-center font-black text-sm shrink-0"
-                      style={{
-                        background: rank === 1 ? "#F59E0B" : rank === 2 ? "#94A3B8" : rank === 3 ? "#CD7F32" : "var(--bg-secondary)",
-                        color: isTop3 ? "#000" : "var(--text-muted)",
-                      }}
-                    >
+                  <div key={entry.id} style={{ display: "flex", alignItems: "center", gap: 16, height: 56, padding: "0 16px", borderRadius: 12, background: "#111114", border: "1px solid rgba(255,255,255,0.07)" }}>
+                    <div style={{ width: 32, height: 32, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 12, flexShrink: 0, background: rank === 1 ? "#F59E0B" : rank === 2 ? "#94A3B8" : rank === 3 ? "#CD7F32" : "#19191d", color: isTop3 ? "#000" : "#52525b" }}>
                       {rank}
                     </div>
-
-                    {/* Car image */}
-                    <div className="w-16 h-12 rounded-xl overflow-hidden shrink-0">
+                    <div style={{ width: 48, height: 36, borderRadius: 6, overflow: "hidden", flexShrink: 0, background: "#19191d" }}>
                       {entry.images?.[0] ? (
-                        <img src={entry.images[0]} alt="" className="w-full h-full object-cover" />
+                        <img src={entry.images[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                       ) : (
-                        <div className="w-full h-full bg-[var(--bg-secondary)]" />
+                        <div style={{ width: "100%", height: "100%", background: "#19191d" }} />
                       )}
                     </div>
-
-                    {/* Info */}
-                    <div className="flex-1 min-w-0">
-                      <p className="font-bold text-sm truncate">
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <p style={{ fontSize: 13, fontWeight: 600, color: "white", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                         {entry.year} {entry.brand} {entry.model}
                       </p>
-                      <div className="flex items-center gap-2 mt-0.5">
-                        <span className="text-xs text-[var(--text-muted)]">@{entry.username}</span>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 2 }}>
+                        <span className="mono" style={{ fontSize: 11, color: "#3f3f46" }}>@{entry.username}</span>
                         <LeagueBadge league={entry.league} size="sm" showLabel={false} />
-                        <span className="text-xs text-[var(--text-muted)]">Lv.{entry.level}</span>
+                        <span className="mono" style={{ fontSize: 11, color: "#3f3f46" }}>Lv.{entry.level}</span>
                       </div>
                     </div>
-
-                    {/* Score */}
-                    <div className="text-right shrink-0">
-                      <p className="text-2xl font-black tabular-nums" style={{ color }}>
+                    <div style={{ textAlign: "right", flexShrink: 0 }}>
+                      <p style={{ fontSize: 18, fontWeight: 800, fontVariantNumeric: "tabular-nums", color }}>
                         {entry.carmog_score}
                       </p>
-                      <p className="text-[10px] text-[var(--text-muted)]">
+                      <p className="mono" style={{ fontSize: 10, color: "#3f3f46" }}>
                         {entry.total_views.toLocaleString()} views
                       </p>
                     </div>
@@ -154,9 +132,9 @@ export default function LeaderboardPage() {
             </div>
           )}
         </div>
-      </main>
+      </section>
+
       <Footer />
-    </>
+    </div>
   );
 }
-

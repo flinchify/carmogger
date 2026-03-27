@@ -10,54 +10,38 @@ import ShareTools from '@/components/ShareTools';
 
 export default function DashboardPage() {
   return (
-    <div className="flex flex-col gap-6">
-      {/* ROW 1 — Above the fold */}
-      {/* Mobile: stack score hero first, then rank, then stats */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* ProfileRankCard - hidden on mobile initially, shown after score */}
-        <div className="order-2 lg:order-1 lg:col-span-3">
+    <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+      {/* ROW 1 */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(12, 1fr)", gap: 24 }}>
+        <div style={{ gridColumn: "span 12" }}>
           <ProfileRankCard />
         </div>
-        {/* ScoreHero - featured car + giant score */}
-        <div className="order-1 lg:order-2 lg:col-span-5 min-h-[340px]">
-          <ScoreHero />
-        </div>
-        {/* QuickStats */}
-        <div className="order-3 lg:order-3 lg:col-span-4">
-          <QuickStats />
-        </div>
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 24 }}>
+        <ScoreHero />
+        <QuickStats />
       </div>
 
-      {/* ROW 2 — Cars + Leaderboard */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* My Cars */}
-        <div className="order-2 lg:order-1 lg:col-span-8">
+      {/* ROW 2 */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 24 }}>
+        <div style={{ gridColumn: "span 1" }}>
           <CarGrid />
         </div>
-        {/* Leaderboard Preview */}
-        <div className="order-1 lg:order-2 lg:col-span-4">
+        <div>
           <LeaderboardPreview />
         </div>
       </div>
 
-      {/* ROW 3 — Score Breakdown + Performance */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <div className="lg:col-span-7">
-          <ScoreBreakdown />
-        </div>
-        <div className="lg:col-span-5">
-          <PerformanceChart />
-        </div>
+      {/* ROW 3 */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 24 }}>
+        <ScoreBreakdown />
+        <PerformanceChart />
       </div>
 
-      {/* ROW 4 — Improve + Share */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <div className="lg:col-span-8">
-          <ImproveSuggestions />
-        </div>
-        <div className="lg:col-span-4">
-          <ShareTools />
-        </div>
+      {/* ROW 4 */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 24 }}>
+        <ImproveSuggestions />
+        <ShareTools />
       </div>
     </div>
   );

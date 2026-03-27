@@ -29,60 +29,77 @@ export default function LeaderboardsPage() {
   }, [tab]);
 
   return (
-    <div className="bg-white min-h-screen">
+    <div style={{ width: "100%", minHeight: "100vh" }}>
       <Navbar />
-      <main className="pt-24 pb-16 px-6">
-        <div className="max-w-[1200px] mx-auto">
-          <div className="text-center mb-10">
-            <h1 className="text-4xl sm:text-5xl font-black text-[#1a1a2e] mb-3">Leader<span className="text-blue-500">boards</span></h1>
-            <p className="text-gray-500 max-w-md mx-auto">The highest rated cars on CarMogger. Compete for the top spot.</p>
-          </div>
 
-          <div className="flex items-center justify-center gap-2 mb-8 flex-wrap">
+      {/* Hero header */}
+      <section style={{ width: "100%", paddingTop: 120, paddingBottom: 40, position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", top: 0, left: "50%", transform: "translateX(-50%)", width: 600, height: 300, background: "radial-gradient(ellipse, rgba(59,130,246,0.08) 0%, transparent 70%)", pointerEvents: "none" }} />
+        <div className="ctr" style={{ textAlign: "center", position: "relative" }}>
+          <p className="fade-up d1 mono" style={{ fontSize: 11, color: "#3b82f6", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 16 }}>[ Leaderboards ]</p>
+          <h1 className="fade-up d2" style={{ fontSize: "clamp(32px, 5vw, 48px)", fontWeight: 800, color: "white", lineHeight: 1.05 }}>
+            Top rated.
+          </h1>
+          <p className="fade-up d3" style={{ marginTop: 16, fontSize: 14, color: "#a1a1aa", maxWidth: 460, marginLeft: "auto", marginRight: "auto" }}>
+            The highest rated cars on CarMogger. Compete for the top spot.
+          </p>
+        </div>
+      </section>
+
+      {/* Filter tabs */}
+      <section style={{ width: "100%", paddingBottom: 16 }}>
+        <div className="ctr" style={{ display: "flex", justifyContent: "center" }}>
+          <div style={{ display: "flex", gap: 4, borderRadius: 8, background: "#111114", border: "1px solid rgba(255,255,255,0.07)", padding: 2 }}>
             {(["global", "weekly", "local", "brand"] as Tab[]).map((t) => (
-              <button key={t} onClick={() => setTab(t)} className={`px-5 py-2.5 rounded-full text-sm font-bold transition-all duration-200 ${tab === t ? "bg-blue-500 text-white shadow-md" : "bg-gray-100 text-gray-500 hover:bg-gray-200"}`}>
-                {t.charAt(0).toUpperCase() + t.slice(1)}
+              <button key={t} className="mono" onClick={() => setTab(t)} style={{ fontSize: 11, padding: "6px 14px", borderRadius: 6, background: tab === t ? "rgba(59,130,246,0.1)" : "transparent", color: tab === t ? "#60a5fa" : "#3f3f46", border: "none", cursor: "pointer", transition: "all 0.15s", textTransform: "capitalize" }}>
+                {t}
               </button>
             ))}
           </div>
+        </div>
+      </section>
 
+      {/* List */}
+      <section style={{ width: "100%", paddingTop: 24, paddingBottom: 80 }}>
+        <div className="ctr">
           {loading ? (
-            <div className="space-y-3 max-w-3xl mx-auto">
-              {[1,2,3,4,5].map(i => <div key={i} className="h-20 rounded-[16px] bg-gray-100 animate-pulse" />)}
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {[1,2,3,4,5].map(i => (
+                <div key={i} style={{ height: 64, borderRadius: 12, background: "#111114", border: "1px solid rgba(255,255,255,0.07)" }} />
+              ))}
             </div>
           ) : entries.length === 0 ? (
-            <div className="max-w-md mx-auto text-center py-20 rounded-[20px] bg-[#f8fafc] border border-gray-100">
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" strokeWidth="1.5" className="mx-auto mb-4"><path d="M18 2H6v7a6 6 0 0012 0V2z" /><path d="M4 22h16" /></svg>
-              <h3 className="text-lg font-bold text-[#1a1a2e] mb-2">No cars rated yet</h3>
-              <p className="text-sm text-gray-500 mb-6">Be the first to claim the top spot.</p>
-              <Link href="/rate" className="px-6 py-3 rounded-xl bg-blue-500 text-white font-bold hover:bg-blue-600 transition-colors">Upload Your Car</Link>
+            <div style={{ borderRadius: 12, background: "#111114", border: "1px solid rgba(255,255,255,0.07)", padding: "64px 20px", textAlign: "center" }}>
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#52525b" strokeWidth="1.5" style={{ margin: "0 auto 16px", display: "block" }}><path d="M18 2H6v7a6 6 0 0012 0V2z" /><path d="M4 22h16" /></svg>
+              <h3 style={{ fontSize: 16, fontWeight: 700, color: "white", marginBottom: 8 }}>No cars rated yet</h3>
+              <p style={{ fontSize: 13, color: "#52525b", marginBottom: 24 }}>Be the first to claim the top spot.</p>
+              <Link href="/rate" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", height: 40, padding: "0 20px", borderRadius: 8, background: "#3b82f6", color: "white", fontSize: 14, fontWeight: 500, textDecoration: "none" }}>Upload Your Car</Link>
             </div>
           ) : (
-            <div className="space-y-3 max-w-3xl mx-auto">
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
               {entries.map((entry, i) => {
                 const rank = i + 1;
                 const score = Number(entry.carmog_score);
                 const color = getScoreColor(score);
                 const isTop3 = rank <= 3;
                 return (
-                  <div key={entry.id} className={`flex items-center gap-4 p-4 rounded-[16px] bg-white border border-gray-100 hover:shadow-md hover:scale-[1.01] transition-all duration-200 ${isTop3 ? "shadow-sm" : ""}`}>
-                    <div className="w-10 h-10 rounded-full flex items-center justify-center font-black text-sm shrink-0" style={{
-                      background: rank === 1 ? "linear-gradient(135deg, #F59E0B, #D97706)" : rank === 2 ? "linear-gradient(135deg, #94A3B8, #64748B)" : rank === 3 ? "linear-gradient(135deg, #CD7F32, #A0522D)" : "#f1f5f9",
-                      color: isTop3 ? "#fff" : "#64748b",
-                    }}>{rank}</div>
-                    <div className="w-16 h-12 rounded-xl overflow-hidden shrink-0 bg-gray-100">
-                      {entry.images?.[0] && <img src={entry.images[0]} alt="" className="w-full h-full object-cover" />}
+                  <div key={entry.id} style={{ display: "flex", alignItems: "center", gap: 16, height: 56, padding: "0 16px", borderRadius: 12, background: "#111114", border: "1px solid rgba(255,255,255,0.07)" }}>
+                    <div style={{ width: 32, height: 32, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 12, flexShrink: 0, background: rank === 1 ? "linear-gradient(135deg, #F59E0B, #D97706)" : rank === 2 ? "linear-gradient(135deg, #94A3B8, #64748B)" : rank === 3 ? "linear-gradient(135deg, #CD7F32, #A0522D)" : "#19191d", color: isTop3 ? "#fff" : "#52525b" }}>
+                      {rank}
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-bold text-sm text-[#1a1a2e] truncate">{entry.year} {entry.brand} {entry.model}</p>
-                      <div className="flex items-center gap-2 mt-0.5">
-                        <span className="text-xs text-gray-500">@{entry.username}</span>
+                    <div style={{ width: 48, height: 36, borderRadius: 6, overflow: "hidden", flexShrink: 0, background: "#19191d" }}>
+                      {entry.images?.[0] && <img src={entry.images[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />}
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <p style={{ fontSize: 13, fontWeight: 600, color: "white", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{entry.year} {entry.brand} {entry.model}</p>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 2 }}>
+                        <span className="mono" style={{ fontSize: 11, color: "#3f3f46" }}>@{entry.username}</span>
                         {entry.league && <LeagueBadge league={entry.league} size="sm" showLabel={false} />}
                       </div>
                     </div>
-                    <div className="text-right shrink-0">
-                      <p className="text-2xl font-black tabular-nums" style={{ color }}>{score}</p>
-                      <p className="text-[10px] text-gray-400">{Number(entry.total_views || 0).toLocaleString()} views</p>
+                    <div style={{ textAlign: "right", flexShrink: 0 }}>
+                      <p style={{ fontSize: 18, fontWeight: 800, fontVariantNumeric: "tabular-nums", color }}>{score}</p>
+                      <p className="mono" style={{ fontSize: 10, color: "#3f3f46" }}>{Number(entry.total_views || 0).toLocaleString()} views</p>
                     </div>
                   </div>
                 );
@@ -90,7 +107,8 @@ export default function LeaderboardsPage() {
             </div>
           )}
         </div>
-      </main>
+      </section>
+
       <Footer />
     </div>
   );

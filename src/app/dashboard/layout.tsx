@@ -9,11 +9,11 @@ export const metadata = {
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen" style={{ background: '#06080d' }}>
+    <div style={{ minHeight: "100vh", background: "#0a0a0b" }}>
       <DashboardSidebar />
       <DashboardTopBar />
-      <main className="lg:pl-[88px] pt-[72px] pb-[88px] lg:pb-0">
-        <div className="max-w-[1440px] mx-auto p-6">
+      <main style={{ paddingLeft: 0, paddingTop: 72, paddingBottom: 88 }}>
+        <div className="ctr" style={{ paddingTop: 24, paddingBottom: 24 }}>
           {children}
         </div>
       </main>
