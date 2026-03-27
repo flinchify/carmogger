@@ -1,6 +1,22 @@
-import { neon } from "@neondatabase/serverless";
+import { neon, NeonQueryFunction } from "@neondatabase/serverless";
 
-const sql = neon(process.env.DATABASE_URL!);
+function getDb(): NeonQueryFunction<false, false> {
+  if (!process.env.DATABASE_URL) {
+    throw new Error("DATABASE_URL is not set");
+  }
+  return neon(process.env.DATABASE_URL);
+}
+
+// Lazy proxy — only connects when you actually call sql`...`
+const sql = new Proxy({} as NeonQueryFunction<false, false>, {
+  apply(_target, _thisArg, args) {
+    return getDb()(...(args as [TemplateStringsArray, ...unknown[]]));
+  },
+  get(_target, prop) {
+    const db = getDb();
+    return (db as unknown as Record<string | symbol, unknown>)[prop];
+  },
+});
 
 export default sql;
 
