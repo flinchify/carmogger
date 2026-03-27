@@ -1,6 +1,6 @@
 "use client";
 
-import { LEAGUES } from "@/lib/leagues";
+import { LEAGUES, LEAGUE_ICONS } from "@/lib/leagues";
 
 interface LeagueBadgeProps {
   league: string;
@@ -11,16 +11,31 @@ interface LeagueBadgeProps {
 
 export default function LeagueBadge({ league, division, size = "md", showLabel = true }: LeagueBadgeProps) {
   const leagueData = LEAGUES.find((l) => l.name === league) || LEAGUES[0];
-  const sizeMap = { sm: "w-6 h-6 text-xs", md: "w-10 h-10 text-sm", lg: "w-16 h-16 text-xl" };
+  const iconData = LEAGUE_ICONS[leagueData.icon];
+  const sizeMap = { sm: 24, md: 40, lg: 64 };
+  const iconSizeMap = { sm: 12, md: 18, lg: 28 };
+  const px = sizeMap[size];
+  const iconPx = iconSizeMap[size];
   const divisionLabel = division ? ` ${["", "I", "II", "III"][division]}` : "";
 
   return (
     <div className="flex items-center gap-2">
       <div
-        className={`${sizeMap[size]} rounded-full flex items-center justify-center font-black bg-gradient-to-br ${leagueData.bg} shadow-lg`}
-        style={{ boxShadow: `0 0 12px ${leagueData.color}40` }}
+        className={`rounded-full flex items-center justify-center bg-gradient-to-br ${leagueData.bg} shadow-lg`}
+        style={{
+          width: px,
+          height: px,
+          boxShadow: `0 0 12px ${leagueData.color}40`,
+        }}
       >
-        {leagueData.emoji}
+        <svg
+          width={iconPx}
+          height={iconPx}
+          viewBox={iconData.viewBox}
+          fill="white"
+        >
+          <path d={iconData.path} />
+        </svg>
       </div>
       {showLabel && (
         <div>
