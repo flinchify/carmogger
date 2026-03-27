@@ -40,9 +40,9 @@ export default function Footer() {
             <h4 className="text-sm font-bold text-white mb-4 uppercase tracking-wider">Product</h4>
             <ul className="space-y-3">
               <li><Link href="/rate" className="text-sm text-[var(--text-muted)] hover:text-white transition-colors">Rate Your Car</Link></li>
-              <li><a href="#leaderboard" className="text-sm text-[var(--text-muted)] hover:text-white transition-colors">Leaderboard</a></li>
-              <li><a href="#leagues" className="text-sm text-[var(--text-muted)] hover:text-white transition-colors">Leagues</a></li>
-              <li><a href="#scoring" className="text-sm text-[var(--text-muted)] hover:text-white transition-colors">How Scoring Works</a></li>
+              <li><Link href="/leaderboards" className="text-sm text-[var(--text-muted)] hover:text-white transition-colors">Leaderboards</Link></li>
+              <li><Link href="/compare" className="text-sm text-[var(--text-muted)] hover:text-white transition-colors">Compare</Link></li>
+              <li><Link href="/dashboard" className="text-sm text-[var(--text-muted)] hover:text-white transition-colors">Dashboard</Link></li>
             </ul>
           </div>
 
