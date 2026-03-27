@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 
 export default function CarGrid() {
-  const cars = [].slice(0, 4);
+  const cars: Array<{ id: number; imageUrl: string; carName: string; score: number }> = [];
 
   return (
     <div className="rounded-[20px] p-6"

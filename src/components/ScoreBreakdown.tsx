@@ -67,7 +67,7 @@ function RadarChart({ data }: { data: Record<string, number> }) {
 }
 
 export default function ScoreBreakdown() {
-  const car = MOCK_CARS[2];
+  const car = { aura: 0, larp: 0, money: 0, demand: 0, hype: 0, carmog_score: 0, brand: '', model: '', year: 0 };
   const data: Record<string, number> = {
     aura: car.aura,
     larp: car.larp,
@@ -90,7 +90,7 @@ export default function ScoreBreakdown() {
           <h2 className="text-base font-semibold text-[#f0f2f5]" style={{ fontFamily: 'Outfit, sans-serif' }}>
             Score Breakdown
           </h2>
-          <p className="text-xs text-[#64748b] mt-1">{car.carName}</p>
+          <p className="text-xs text-[#64748b] mt-1">{car.year} {car.brand} {car.model}</p>
         </div>
         <div className="hidden sm:block">
           <RadarChart data={data} />

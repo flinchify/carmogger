@@ -8,7 +8,7 @@ const tabs = ['Global', 'Weekly', 'Local', 'Brand'];
 
 export default function LeaderboardPreview() {
   const [activeTab, setActiveTab] = useState('Global');
-  const top5 = [].slice(0, 5);
+  const top5: Array<{ id: number; imageUrl: string; carName: string; displayName: string; score: number }> = [];
 
   return (
     <div className="h-full rounded-[20px] p-6 flex flex-col"
