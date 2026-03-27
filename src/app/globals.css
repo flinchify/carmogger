@@ -1,26 +1,10 @@
 @import "tailwindcss";
 
-:root {
-  --bg: #0a0a0b;
-  --surface: #111114;
-  --surface-hover: #19191d;
-  --border: rgba(255, 255, 255, 0.07);
-  --border-hover: rgba(255, 255, 255, 0.14);
-  --text: #fafafa;
-  --text-secondary: #a1a1aa;
-  --text-muted: #52525b;
-  --accent: #3b82f6;
-  --accent-hover: #2563eb;
-  --radius: 12px;
-  --radius-sm: 8px;
-  --container: 1100px;
-}
-
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; width: 100%; }
 body {
-  background: var(--bg);
-  color: var(--text);
+  background: #0a0a0b;
+  color: #fafafa;
   font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
@@ -36,10 +20,8 @@ h1, h2, h3, h4, h5, h6 {
   line-height: 1.1;
 }
 
-/* Mono accent text */
-.mono { font-family: 'Space Mono', 'SF Mono', 'Fira Code', ui-monospace, monospace; }
+.mono { font-family: 'Space Mono', 'SF Mono', ui-monospace, monospace; }
 
-/* Animations — minimal, fast */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(16px); }
   to { opacity: 1; transform: translateY(0); }
@@ -56,8 +38,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .score-bar-fill { animation: fillBar 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
 
-/* Scrollbar */
 ::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-track { background: #0a0a0b; }
 ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
