@@ -3,7 +3,9 @@
 import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import Particles from "@/components/Particles";
+import Footer from "@/components/Footer";
 import LeagueBadge from "@/components/LeagueBadge";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { getScoreColor } from "@/lib/ai-scoring";
 
 interface LeaderboardEntry {
@@ -155,6 +157,7 @@ export default function LeaderboardPage() {
           )}
         </div>
       </main>
+      <Footer />
     </>
   );
 }

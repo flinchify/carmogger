@@ -6,7 +6,9 @@ import Particles from "@/components/Particles";
 import ScoreRing from "@/components/ScoreRing";
 import ScoreBar from "@/components/ScoreBar";
 import Confetti from "@/components/Confetti";
+import Footer from "@/components/Footer";
 import { getScoreLabel, getScoreColor } from "@/lib/ai-scoring";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 interface ScoreResult {
   make: string;
@@ -86,13 +88,15 @@ export default function RatePage() {
     setError(null);
   };
 
+  useScrollReveal();
+
   return (
     <>
       <Particles />
       <Navbar />
       <Confetti trigger={showConfetti} />
 
-      <main className="relative z-10 min-h-screen pt-24 pb-16 px-4">
+      <main className="relative z-10 min-h-screen pt-28 pb-16 px-4">
         <div className="max-w-3xl mx-auto">
           {!result ? (
             <>
@@ -175,7 +179,7 @@ export default function RatePage() {
               )}
 
               {error && (
-                <div className="mt-4 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+                <div className="mt-4 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm animate-slide-up">
                   {error}
                 </div>
               )}
@@ -256,6 +260,7 @@ export default function RatePage() {
           )}
         </div>
       </main>
+      <Footer />
     </>
   );
 }

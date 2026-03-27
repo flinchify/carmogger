@@ -90,12 +90,7 @@ export async function scoreCarImage(imageBase64: string, mimeType: string): Prom
           {
             parts: [
               { text: SCORING_PROMPT },
-              {
-                inlineData: {
-                  mimeType,
-                  data: imageBase64,
-                },
-              },
+              { inlineData: { mimeType, data: imageBase64 } },
             ],
           },
         ],
@@ -118,14 +113,8 @@ export async function scoreCarImage(imageBase64: string, mimeType: string): Prom
   if (!text) throw new Error("No response from Gemini");
 
   const parsed = JSON.parse(text);
-
-  // Calculate weighted CarMog score
   const carmogScore = Math.round(
-    parsed.aura * 0.25 +
-    parsed.larp * 0.20 +
-    parsed.money * 0.20 +
-    parsed.demand * 0.20 +
-    parsed.hype * 0.15
+    parsed.aura * 0.25 + parsed.larp * 0.20 + parsed.money * 0.20 + parsed.demand * 0.20 + parsed.hype * 0.15
   );
 
   return { ...parsed, carmogScore };
@@ -141,10 +130,10 @@ export function getScoreLabel(score: number): string {
 }
 
 export function getScoreColor(score: number): string {
-  if (score >= 90) return "#EF4444";
-  if (score >= 75) return "#F59E0B";
+  if (score >= 90) return "#60a5fa";
+  if (score >= 75) return "#3b82f6";
   if (score >= 60) return "#8B5CF6";
-  if (score >= 40) return "#3B82F6";
-  if (score >= 20) return "#10B981";
-  return "#6B7280";
+  if (score >= 40) return "#10B981";
+  if (score >= 20) return "#94a3b8";
+  return "#64748b";
 }

@@ -2,6 +2,7 @@
 
 import Navbar from "@/components/Navbar";
 import Particles from "@/components/Particles";
+import Footer from "@/components/Footer";
 import { LEAGUES } from "@/lib/leagues";
 
 export default function LeaguesPage() {
@@ -101,6 +102,7 @@ export default function LeaguesPage() {
           </div>
         </div>
       </main>
+      <Footer />
     </>
   );
 }
