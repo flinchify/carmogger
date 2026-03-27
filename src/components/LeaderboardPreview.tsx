@@ -2,13 +2,13 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { MOCK_CARS } from '@/lib/mock-data';
+
 
 const tabs = ['Global', 'Weekly', 'Local', 'Brand'];
 
 export default function LeaderboardPreview() {
   const [activeTab, setActiveTab] = useState('Global');
-  const top5 = MOCK_CARS.slice(0, 5);
+  const top5 = [].slice(0, 5);
 
   return (
     <div className="h-full rounded-[20px] p-6 flex flex-col"

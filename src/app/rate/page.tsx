@@ -2,14 +2,14 @@
 
 import { useState, useCallback, useEffect } from "react";
 import Navbar from "@/components/Navbar";
-import Particles from "@/components/Particles";
+
 import ScoreRing from "@/components/ScoreRing";
 import ScoreBar from "@/components/ScoreBar";
 import Confetti from "@/components/Confetti";
 import Footer from "@/components/Footer";
 import AuthModal from "@/components/AuthModal";
 import { getScoreLabel, getScoreColor } from "@/lib/ai-scoring";
-import { useScrollReveal } from "@/hooks/useScrollReveal";
+
 
 interface ScoreResult {
   make: string;
@@ -153,11 +153,11 @@ export default function RatePage() {
     setError(null);
   };
 
-  useScrollReveal();
+  
 
   return (
     <>
-      <Particles />
+      
       <Navbar />
       <Confetti trigger={showConfetti} />
       <AuthModal isOpen={showAuth} onClose={() => setShowAuth(false)} />
@@ -563,3 +563,4 @@ export default function RatePage() {
     </>
   );
 }
+

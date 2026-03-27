@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { MOCK_CARS } from '@/lib/mock-data';
+
 
 function getScoreLabel(score: number) {
   if (score >= 90) return 'APEX MOG';
@@ -13,7 +13,7 @@ function getScoreLabel(score: number) {
 }
 
 export default function ScoreHero() {
-  const car = MOCK_CARS[2]; // BMW M3 Competition - user's featured car
+  const car = { carName: 'Upload your first car', score: 0, imageUrl: '' };
 
   return (
     <div className="relative h-full overflow-hidden rounded-[20px]"

@@ -2,10 +2,10 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { MOCK_CARS } from '@/lib/mock-data';
+
 
 export default function CarGrid() {
-  const cars = MOCK_CARS.slice(0, 4);
+  const cars = [].slice(0, 4);
 
   return (
     <div className="rounded-[20px] p-6"

@@ -1,174 +1,139 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
-import Particles from "@/components/Particles";
 import Footer from "@/components/Footer";
 import ScoreRing from "@/components/ScoreRing";
-import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { getScoreColor, getScoreLabel } from "@/lib/ai-scoring";
-import { MOCK_CARS } from "@/lib/mock-data";
+import Link from "next/link";
+
+interface Car {
+  id: number; brand: string; model: string; year: number; carmog_score: number;
+  aura: number; larp: number; money: number; demand: number; hype: number;
+  images: string[]; username: string;
+}
 
 const AXES = ["aura", "larp", "money", "demand", "hype"] as const;
-const AXIS_WEIGHTS: Record<string, string> = {
-  aura: "25%",
-  larp: "20%",
-  money: "20%",
-  demand: "20%",
-  hype: "15%",
-};
+const AXIS_WEIGHTS: Record<string, string> = { aura: "25%", larp: "20%", money: "20%", demand: "20%", hype: "15%" };
 
 export default function ComparePage() {
-  const [carAIndex, setCarAIndex] = useState(0);
-  const [carBIndex, setCarBIndex] = useState(1);
-  useScrollReveal();
+  const [cars, setCars] = useState<Car[]>([]);
+  const [carAId, setCarAId] = useState<number | null>(null);
+  const [carBId, setCarBId] = useState<number | null>(null);
 
-  const carA = MOCK_CARS[carAIndex];
-  const carB = MOCK_CARS[carBIndex];
+  useEffect(() => {
+    fetch("/api/leaderboard?sort=score&limit=20")
+      .then(r => r.json())
+      .then(d => {
+        const entries = d.entries || d || [];
+        setCars(entries);
+        if (entries.length >= 2) { setCarAId(entries[0].id); setCarBId(entries[1].id); }
+      }).catch(() => {});
+  }, []);
 
-  const getAxisValue = (car: typeof carA, axis: string): number => {
-    return car[axis as keyof typeof car] as number;
-  };
+  const carA = cars.find(c => c.id === carAId);
+  const carB = cars.find(c => c.id === carBId);
 
   return (
-    <>
-      <Particles />
+    <div className="bg-white min-h-screen">
       <Navbar />
-
-      <main className="relative z-10 min-h-screen pt-24 pb-16 px-6">
-        <div className="max-w-[1440px] mx-auto">
-          <div className="text-center mb-10 scroll-reveal">
-            <h1 className="text-4xl sm:text-5xl font-black mb-3">
-              Com<span className="text-[var(--accent)]">pare</span>
-            </h1>
-            <p className="text-[var(--text-secondary)] max-w-md mx-auto">
-              Put two cars head to head. Every axis, side by side.
-            </p>
+      <main className="pt-24 pb-16 px-6">
+        <div className="max-w-[1200px] mx-auto">
+          <div className="text-center mb-10">
+            <h1 className="text-4xl sm:text-5xl font-black text-[#1a1a2e] mb-3">Com<span className="text-blue-500">pare</span></h1>
+            <p className="text-gray-500 max-w-md mx-auto">Put two cars head to head. Every axis, side by side.</p>
           </div>
 
-          {/* Car selectors */}
-          <div className="grid md:grid-cols-2 gap-6 mb-10">
-            {[{ label: "Car A", value: carAIndex, setter: setCarAIndex }, { label: "Car B", value: carBIndex, setter: setCarBIndex }].map((sel) => (
-              <div key={sel.label} className="scroll-reveal">
-                <label className="block text-xs font-bold text-[var(--text-muted)] uppercase tracking-widest mb-2">{sel.label}</label>
-                <select
-                  value={sel.value}
-                  onChange={(e) => sel.setter(Number(e.target.value))}
-                  className="w-full px-4 py-3 rounded-[16px] bg-[var(--bg-card)] border border-[var(--border)] text-white text-sm font-medium appearance-none cursor-pointer"
-                  style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%238892a4' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")`, backgroundRepeat: "no-repeat", backgroundPosition: "right 16px center" }}
-                >
-                  {MOCK_CARS.map((car, i) => (
-                    <option key={car.id} value={i}>{car.year} {car.brand} {car.model}</option>
-                  ))}
-                </select>
-              </div>
-            ))}
-          </div>
-
-          {/* Car Cards */}
-          <div className="grid md:grid-cols-2 gap-6 mb-10">
-            {[carA, carB].map((car, idx) => {
-              const color = getScoreColor(car.score);
-              const label = getScoreLabel(car.score);
-              return (
-                <div key={idx} className="scroll-reveal rounded-[20px] bg-[var(--bg-card)] border border-[var(--border)] overflow-hidden">
-                  <div className="aspect-[16/9] overflow-hidden relative">
-                    <img src={car.imageUrl} alt={`${car.brand} ${car.model}`} className="w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-card)] via-transparent to-transparent" />
-                    <div className="absolute top-4 right-4 px-3 py-1.5 rounded-full text-sm font-black backdrop-blur-md" style={{ background: `${color}15`, color, border: `1px solid ${color}30` }}>
-                      {label}
-                    </div>
+          {cars.length < 2 ? (
+            <div className="max-w-md mx-auto text-center py-20 rounded-[20px] bg-[#f8fafc] border border-gray-100">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" strokeWidth="1.5" className="mx-auto mb-4"><rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" /></svg>
+              <h3 className="text-lg font-bold text-[#1a1a2e] mb-2">Need at least 2 cars to compare</h3>
+              <p className="text-sm text-gray-500 mb-6">Upload your car first, then come back to compare.</p>
+              <Link href="/rate" className="px-6 py-3 rounded-xl bg-blue-500 text-white font-bold hover:bg-blue-600 transition-colors">Upload Your Car</Link>
+            </div>
+          ) : carA && carB ? (
+            <>
+              <div className="grid md:grid-cols-2 gap-6 mb-10">
+                {[{ label: "Car A", value: carAId, setter: setCarAId }, { label: "Car B", value: carBId, setter: setCarBId }].map((sel) => (
+                  <div key={sel.label}>
+                    <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">{sel.label}</label>
+                    <select value={sel.value || ""} onChange={(e) => sel.setter(Number(e.target.value))} className="w-full px-4 py-3 rounded-[16px] bg-[#f8fafc] border border-gray-200 text-[#1a1a2e] text-sm font-medium appearance-none cursor-pointer hover:border-gray-300 transition-colors">
+                      {cars.map((car) => <option key={car.id} value={car.id}>{car.year} {car.brand} {car.model}</option>)}
+                    </select>
                   </div>
-                  <div className="p-6 flex items-center gap-5">
-                    <ScoreRing score={car.score} size={100} delay={idx * 200 + 300} />
-                    <div>
-                      <h3 className="text-lg font-black">{car.year} {car.brand} {car.model}</h3>
-                      <p className="text-xs text-[var(--text-muted)] mt-0.5">@{car.username}</p>
+                ))}
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-6 mb-10">
+                {[carA, carB].map((car, idx) => {
+                  const score = Number(car.carmog_score);
+                  const color = getScoreColor(score);
+                  return (
+                    <div key={idx} className="rounded-[20px] bg-[#f8fafc] border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-200">
+                      <div className="aspect-[16/9] overflow-hidden relative bg-gray-200">
+                        {car.images?.[0] && <img src={car.images[0]} alt="" className="w-full h-full object-cover" />}
+                        <div className="absolute top-4 right-4 px-3 py-1.5 rounded-full text-sm font-black bg-white shadow-md" style={{ color }}>{getScoreLabel(score)}</div>
+                      </div>
+                      <div className="p-6 flex items-center gap-5">
+                        <ScoreRing score={score} size={100} delay={idx * 200 + 300} />
+                        <div>
+                          <h3 className="text-lg font-black text-[#1a1a2e]">{car.year} {car.brand} {car.model}</h3>
+                          <p className="text-xs text-gray-500 mt-0.5">@{car.username}</p>
+                        </div>
+                      </div>
                     </div>
+                  );
+                })}
+              </div>
+
+              <div className="rounded-[20px] bg-[#f8fafc] border border-gray-100 p-8 mb-8">
+                <h2 className="text-center text-xs font-bold text-gray-400 uppercase tracking-widest mb-6">Overall Score</h2>
+                <div className="flex items-center justify-center gap-8 sm:gap-16">
+                  <div className="text-center">
+                    <p className="text-5xl sm:text-6xl font-black tabular-nums" style={{ color: getScoreColor(Number(carA.carmog_score)) }}>{Number(carA.carmog_score)}</p>
+                    <p className="text-sm text-gray-500 mt-2">{carA.brand} {carA.model}</p>
+                  </div>
+                  <div className="text-2xl font-black text-gray-300">vs</div>
+                  <div className="text-center">
+                    <p className="text-5xl sm:text-6xl font-black tabular-nums" style={{ color: getScoreColor(Number(carB.carmog_score)) }}>{Number(carB.carmog_score)}</p>
+                    <p className="text-sm text-gray-500 mt-2">{carB.brand} {carB.model}</p>
                   </div>
                 </div>
-              );
-            })}
-          </div>
-
-          {/* Overall Score Comparison */}
-          <div className="scroll-reveal rounded-[20px] bg-[var(--bg-card)] border border-[var(--border)] p-8 mb-8">
-            <h2 className="text-center text-xs font-bold text-[var(--text-muted)] uppercase tracking-widest mb-6">Overall Score</h2>
-            <div className="flex items-center justify-center gap-8 sm:gap-16">
-              <div className="text-center">
-                <p className="text-5xl sm:text-6xl font-black tabular-nums" style={{ color: getScoreColor(carA.score) }}>{carA.score}</p>
-                <p className="text-sm text-[var(--text-muted)] mt-2">{carA.brand} {carA.model}</p>
               </div>
-              <div className="text-2xl font-black text-[var(--text-muted)]">vs</div>
-              <div className="text-center">
-                <p className="text-5xl sm:text-6xl font-black tabular-nums" style={{ color: getScoreColor(carB.score) }}>{carB.score}</p>
-                <p className="text-sm text-[var(--text-muted)] mt-2">{carB.brand} {carB.model}</p>
-              </div>
-            </div>
-            {carA.score !== carB.score && (
-              <p className="text-center text-sm mt-4">
-                <span className="font-bold" style={{ color: getScoreColor(Math.max(carA.score, carB.score)) }}>
-                  {carA.score > carB.score ? `${carA.brand} ${carA.model}` : `${carB.brand} ${carB.model}`}
-                </span>
-                <span className="text-[var(--text-muted)]"> wins by </span>
-                <span className="font-bold text-white">{Math.abs(carA.score - carB.score)} points</span>
-              </p>
-            )}
-          </div>
 
-          {/* Axis-by-axis comparison */}
-          <div className="scroll-reveal rounded-[20px] bg-[var(--bg-card)] border border-[var(--border)] p-8">
-            <h2 className="text-center text-xs font-bold text-[var(--text-muted)] uppercase tracking-widest mb-8">Score Breakdown</h2>
-            <div className="space-y-6">
-              {AXES.map((axis) => {
-                const valA = getAxisValue(carA, axis);
-                const valB = getAxisValue(carB, axis);
-                const colorA = getScoreColor(valA);
-                const colorB = getScoreColor(valB);
-                const winner = valA > valB ? "a" : valB > valA ? "b" : "tie";
-
-                return (
-                  <div key={axis}>
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-bold tabular-nums" style={{ color: colorA }}>
-                        {valA}
-                        {winner === "a" && <svg className="inline ml-1 -mt-0.5" width="10" height="10" viewBox="0 0 10 10" fill={colorA}><polygon points="5,0 10,10 0,10" /></svg>}
-                      </span>
-                      <span className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-widest">
-                        {axis} <span className="text-[var(--text-muted)] font-normal">({AXIS_WEIGHTS[axis]})</span>
-                      </span>
-                      <span className="text-sm font-bold tabular-nums" style={{ color: colorB }}>
-                        {winner === "b" && <svg className="inline mr-1 -mt-0.5" width="10" height="10" viewBox="0 0 10 10" fill={colorB}><polygon points="5,0 10,10 0,10" /></svg>}
-                        {valB}
-                      </span>
-                    </div>
-                    <div className="flex gap-1">
-                      <div className="flex-1 h-3 rounded-full bg-white/[0.04] overflow-hidden flex justify-end">
-                        <div className="h-full rounded-full transition-all duration-1000 ease-out" style={{ width: `${valA}%`, background: `linear-gradient(90deg, ${colorA}60, ${colorA})`, boxShadow: winner === "a" ? `0 0 8px ${colorA}40` : "none" }} />
+              <div className="rounded-[20px] bg-[#f8fafc] border border-gray-100 p-8">
+                <h2 className="text-center text-xs font-bold text-gray-400 uppercase tracking-widest mb-8">Score Breakdown</h2>
+                <div className="space-y-6">
+                  {AXES.map((axis) => {
+                    const valA = Number((carA as Record<string, unknown>)[axis]);
+                    const valB = Number((carB as Record<string, unknown>)[axis]);
+                    const colorA = getScoreColor(valA);
+                    const colorB = getScoreColor(valB);
+                    return (
+                      <div key={axis}>
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-sm font-bold tabular-nums" style={{ color: colorA }}>{valA}</span>
+                          <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">{axis} <span className="text-gray-400 font-normal">({AXIS_WEIGHTS[axis]})</span></span>
+                          <span className="text-sm font-bold tabular-nums" style={{ color: colorB }}>{valB}</span>
+                        </div>
+                        <div className="flex gap-1">
+                          <div className="flex-1 h-3 rounded-full bg-gray-200 overflow-hidden flex justify-end">
+                            <div className="h-full rounded-full" style={{ width: `${valA}%`, background: colorA }} />
+                          </div>
+                          <div className="flex-1 h-3 rounded-full bg-gray-200 overflow-hidden">
+                            <div className="h-full rounded-full" style={{ width: `${valB}%`, background: colorB }} />
+                          </div>
+                        </div>
                       </div>
-                      <div className="flex-1 h-3 rounded-full bg-white/[0.04] overflow-hidden">
-                        <div className="h-full rounded-full transition-all duration-1000 ease-out" style={{ width: `${valB}%`, background: `linear-gradient(90deg, ${colorB}, ${colorB}60)`, boxShadow: winner === "b" ? `0 0 8px ${colorB}40` : "none" }} />
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            <div className="flex items-center justify-center gap-8 mt-8 pt-6 border-t border-[var(--border)]">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full" style={{ background: getScoreColor(carA.score) }} />
-                <span className="text-xs text-[var(--text-muted)]">{carA.brand} {carA.model}</span>
+                    );
+                  })}
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full" style={{ background: getScoreColor(carB.score) }} />
-                <span className="text-xs text-[var(--text-muted)]">{carB.brand} {carB.model}</span>
-              </div>
-            </div>
-          </div>
+            </>
+          ) : null}
         </div>
       </main>
       <Footer />
-    </>
+    </div>
   );
 }

@@ -2,10 +2,9 @@
 
 import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
-import Particles from "@/components/Particles";
 import Footer from "@/components/Footer";
 import LeagueBadge from "@/components/LeagueBadge";
-import { useScrollReveal } from "@/hooks/useScrollReveal";
+
 import { getScoreColor } from "@/lib/ai-scoring";
 
 interface LeaderboardEntry {
@@ -43,7 +42,6 @@ export default function LeaderboardPage() {
 
   return (
     <>
-      <Particles />
       <Navbar />
 
       <main className="relative z-10 min-h-screen pt-24 pb-16 px-4">
@@ -161,3 +159,4 @@ export default function LeaderboardPage() {
     </>
   );
 }
+

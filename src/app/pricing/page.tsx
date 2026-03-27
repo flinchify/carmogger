@@ -3,9 +3,9 @@
 import { useState } from "react";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
-import Particles from "@/components/Particles";
+
 import Footer from "@/components/Footer";
-import { useScrollReveal } from "@/hooks/useScrollReveal";
+
 
 function CheckIcon() {
   return (
@@ -114,16 +114,16 @@ const ADDONS = [
 
 export default function PricingPage() {
   const [annual, setAnnual] = useState(false);
-  useScrollReveal();
+  
 
   return (
     <>
-      <Particles />
+      
       <Navbar />
 
       <main className="relative z-10 min-h-screen pt-24 pb-16 px-6">
         <div className="max-w-[1440px] mx-auto">
-          <div className="text-center mb-12 scroll-reveal">
+          <div className="text-center mb-12 ">
             <h1 className="text-4xl sm:text-5xl font-black mb-3">
               Simple <span className="text-[var(--accent)]">pricing</span>
             </h1>
@@ -133,7 +133,7 @@ export default function PricingPage() {
           </div>
 
           {/* Monthly / Annual toggle */}
-          <div className="flex items-center justify-center gap-4 mb-12 scroll-reveal">
+          <div className="flex items-center justify-center gap-4 mb-12 ">
             <span className={`text-sm font-medium transition-colors ${!annual ? "text-white" : "text-[var(--text-muted)]"}`}>Monthly</span>
             <button
               onClick={() => setAnnual(!annual)}
@@ -155,7 +155,7 @@ export default function PricingPage() {
               return (
                 <div
                   key={tier.name}
-                  className={`scroll-reveal rounded-[20px] p-8 border transition-all relative ${tier.popular ? "bg-[var(--bg-card)] border-blue-500/30 shadow-lg shadow-blue-500/5" : "bg-[var(--bg-card)] border-[var(--border)]"}`}
+                  className={` rounded-[20px] p-8 border transition-all relative ${tier.popular ? "bg-[var(--bg-card)] border-blue-500/30 shadow-lg shadow-blue-500/5" : "bg-[var(--bg-card)] border-[var(--border)]"}`}
                 >
                   {tier.popular && (
                     <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-[var(--accent)] text-white text-[10px] font-bold uppercase tracking-wider">
@@ -193,7 +193,7 @@ export default function PricingPage() {
           </div>
 
           {/* Add-ons */}
-          <div className="scroll-reveal">
+          <div className="">
             <h2 className="text-2xl font-black text-center mb-2">Add-ons</h2>
             <p className="text-sm text-[var(--text-muted)] text-center mb-8">Need more? Top up anytime.</p>
             <div className="grid sm:grid-cols-3 gap-4 max-w-3xl mx-auto">
@@ -207,7 +207,7 @@ export default function PricingPage() {
             </div>
           </div>
 
-          <div className="scroll-reveal mt-16 text-center">
+          <div className=" mt-16 text-center">
             <p className="text-[var(--text-muted)] text-sm">All plans include access to the CarMogger community. Cancel anytime.</p>
             <p className="text-[var(--text-muted)] text-sm mt-1">Questions? Reach out at support@carmogger.com</p>
           </div>
@@ -217,3 +217,4 @@ export default function PricingPage() {
     </>
   );
 }
+

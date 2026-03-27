@@ -4,14 +4,11 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import Particles from "@/components/Particles";
 import ScoreRing from "@/components/ScoreRing";
 import ScoreBar from "@/components/ScoreBar";
 import LeagueBadge from "@/components/LeagueBadge";
-import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { getScoreColor, getScoreLabel } from "@/lib/ai-scoring";
 import { getXpForNextLevel } from "@/lib/leagues";
-import { MOCK_CARS } from "@/lib/mock-data";
 
 interface ProfileData {
   user: {

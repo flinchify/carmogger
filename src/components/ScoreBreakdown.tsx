@@ -1,6 +1,6 @@
 'use client';
 
-import { MOCK_CARS } from '@/lib/mock-data';
+
 
 const metrics = [
   { key: 'aura', label: 'Aura', weight: '25%', desc: 'Visual presence & stance' },
