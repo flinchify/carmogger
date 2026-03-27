@@ -105,8 +105,8 @@ export default function ComparePage() {
                 <h2 className="text-center text-xs font-bold text-gray-400 uppercase tracking-widest mb-8">Score Breakdown</h2>
                 <div className="space-y-6">
                   {AXES.map((axis) => {
-                    const valA = Number((carA as Record<string, unknown>)[axis]);
-                    const valB = Number((carB as Record<string, unknown>)[axis]);
+                    const valA = Number((carA as unknown as Record<string, unknown>)[axis]);
+                    const valB = Number((carB as unknown as Record<string, unknown>)[axis]);
                     const colorA = getScoreColor(valA);
                     const colorB = getScoreColor(valB);
                     return (
