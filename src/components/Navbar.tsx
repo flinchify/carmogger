@@ -32,9 +32,7 @@ export default function Navbar() {
         <nav style={{ width: "100%", maxWidth: 1100, borderRadius: 16, border: "1px solid rgba(255,255,255,0.07)", transition: "all 0.3s", background: scrolled ? "rgba(10,10,11,0.85)" : "rgba(17,17,20,0.6)", backdropFilter: scrolled ? "blur(20px)" : "blur(12px)" }}>
           <div style={{ height: 48, padding: "0 20px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <Link href="/" style={{ display: "flex", alignItems: "center", gap: 8, textDecoration: "none" }}>
-              <div style={{ width: 24, height: 24, borderRadius: 6, background: "#3b82f6", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-              </div>
+              <img src="/logo-header.png" alt="CarMogger" style={{ height: 28, width: "auto" }} />
               <span style={{ fontSize: 14, fontWeight: 600, color: "white" }}>carmogger</span>
             </Link>
 
