@@ -141,6 +141,15 @@ export async function ensureTables() {
     `;
   }
 
+  // Waitlist
+  await sql`CREATE TABLE IF NOT EXISTS waitlist (
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    name VARCHAR(100),
+    referral_source VARCHAR(100),
+    created_at TIMESTAMPTZ DEFAULT NOW()
+  )`;
+
   // Create indexes
   await sql`CREATE INDEX IF NOT EXISTS idx_cars_user_id ON cars(user_id)`;
   await sql`CREATE INDEX IF NOT EXISTS idx_cars_carmog_score ON cars(carmog_score DESC)`;
@@ -149,4 +158,5 @@ export async function ensureTables() {
   await sql`CREATE INDEX IF NOT EXISTS idx_xp_events_user ON xp_events(user_id, created_at)`;
   await sql`CREATE INDEX IF NOT EXISTS idx_users_lifetime_xp ON users(lifetime_xp DESC)`;
   await sql`CREATE INDEX IF NOT EXISTS idx_users_league ON users(league, division)`;
+  await sql`CREATE INDEX IF NOT EXISTS idx_waitlist_email ON waitlist(email)`;
 }
