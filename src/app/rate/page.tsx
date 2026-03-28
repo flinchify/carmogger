@@ -7,6 +7,7 @@ import ScoreBar from "@/components/ScoreBar";
 import Confetti from "@/components/Confetti";
 import Footer from "@/components/Footer";
 import AuthModal from "@/components/AuthModal";
+import ReelCard from "@/components/ReelCard";
 import { getScoreLabel, getScoreColor } from "@/lib/ai-scoring";
 
 interface ScoreResult {
@@ -375,6 +376,9 @@ export default function RatePage() {
                 <button style={{ flex: 1, minWidth: 200, height: 48, borderRadius: 8, border: "1px solid rgba(255,255,255,0.07)", background: "transparent", color: "#a1a1aa", fontSize: 14, fontWeight: 500, cursor: "pointer" }}>
                   Share Score
                 </button>
+                {previews.length > 0 && (
+                  <ReelCard result={result} carImageSrc={previews[0]} />
+                )}
               </div>
             </>
           )}
