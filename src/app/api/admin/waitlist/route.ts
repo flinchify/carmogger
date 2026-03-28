@@ -6,7 +6,8 @@ function isAuthorized(req: NextRequest): boolean {
   if (!secret) return false;
   const fromHeader = req.headers.get("x-admin-secret");
   const fromQuery = req.nextUrl.searchParams.get("secret");
-  return fromHeader === secret || fromQuery === secret;
+  const fromCookie = req.cookies.get("carmog_admin")?.value;
+  return fromHeader === secret || fromQuery === secret || fromCookie === secret;
 }
 
 export async function GET(req: NextRequest) {

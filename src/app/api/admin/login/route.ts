@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import crypto from "crypto";
 
 export async function POST(req: NextRequest) {
   try {
@@ -14,15 +13,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
     }
 
-    const token = crypto.randomBytes(32).toString("hex");
-
+    // Store the actual secret as the cookie so we can verify it later
     const res = NextResponse.json({ success: true });
-    res.cookies.set("carmog_admin", token, {
+    res.cookies.set("carmog_admin", adminSecret, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       path: "/",
-      maxAge: 60 * 60 * 24 * 7, // 7 days
+      maxAge: 60 * 60 * 24 * 7,
     });
 
     return res;
