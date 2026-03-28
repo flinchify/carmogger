@@ -22,10 +22,13 @@ interface ScoreResult {
   money: number;
   demand: number;
   hype: number;
+  interior: number;
+  sound: number;
   carmogScore: number;
   roast: string;
   highlights: string[];
   lowlights: string[];
+  detailed_breakdown: Record<string, string>;
 }
 
 const LOADING_STEPS = [
@@ -34,6 +37,16 @@ const LOADING_STEPS = [
   "Calculating scores...",
   "Generating roast...",
 ];
+
+const CATEGORY_LABELS: Record<string, string> = {
+  aura: "Aura",
+  larp: "Larp",
+  money: "Money",
+  demand: "Demand",
+  hype: "Hype",
+  interior: "Interior",
+  sound: "Sound",
+};
 
 const cardStyle: React.CSSProperties = { borderRadius: 12, background: "#111114", border: "1px solid rgba(255,255,255,0.07)", padding: 20 };
 
@@ -49,6 +62,7 @@ export default function RatePage() {
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
   const [showAuth, setShowAuth] = useState(false);
+  const [shareCopied, setShareCopied] = useState(false);
 
   useEffect(() => {
     fetch("/api/auth/me")
@@ -135,6 +149,28 @@ export default function RatePage() {
       setLoading(false);
       setLoadingStep(0);
       setLoadingProgress(0);
+    }
+  };
+
+  const handleShare = async () => {
+    if (!result) return;
+    const text = `Check out my CarMogger score! ${result.carmogScore.toFixed(2)} on carmogger.com`;
+    try {
+      await navigator.clipboard.writeText(text);
+      setShareCopied(true);
+      setTimeout(() => setShareCopied(false), 2000);
+    } catch {
+      // Fallback for older browsers
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position = "fixed";
+      ta.style.left = "-9999px";
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+      setShareCopied(true);
+      setTimeout(() => setShareCopied(false), 2000);
     }
   };
 
@@ -322,12 +358,33 @@ export default function RatePage() {
                 <p className="mono" style={{ fontSize: 10, fontWeight: 700, color: "#52525b", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 20 }}>Score Breakdown</p>
                 <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
                   <ScoreBar label="Aura" value={result.aura} delay={500} />
-                  <ScoreBar label="Larp" value={result.larp} delay={650} />
-                  <ScoreBar label="Money" value={result.money} delay={800} />
-                  <ScoreBar label="Demand" value={result.demand} delay={950} />
-                  <ScoreBar label="Hype" value={result.hype} delay={1100} />
+                  <ScoreBar label="Larp" value={result.larp} delay={600} />
+                  <ScoreBar label="Money" value={result.money} delay={700} />
+                  <ScoreBar label="Demand" value={result.demand} delay={800} />
+                  <ScoreBar label="Hype" value={result.hype} delay={900} />
+                  <ScoreBar label="Interior" value={result.interior} delay={1000} />
+                  <ScoreBar label="Sound" value={result.sound} delay={1100} />
                 </div>
               </div>
+
+              {/* Detailed Breakdown */}
+              {result.detailed_breakdown && (
+                <div className="fade-up d4" style={{ ...cardStyle, marginBottom: 16 }}>
+                  <p className="mono" style={{ fontSize: 10, fontWeight: 700, color: "#3b82f6", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 16 }}>Detailed Breakdown</p>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                    {Object.entries(result.detailed_breakdown).map(([key, explanation]) => (
+                      <div key={key} style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                        <span className="mono" style={{ fontSize: 11, fontWeight: 700, color: "#52525b", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+                          {CATEGORY_LABELS[key] || key}
+                        </span>
+                        <p style={{ fontSize: 13, lineHeight: 1.6, color: "#a1a1aa", margin: 0 }}>
+                          {explanation}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* Highlights / Lowlights */}
               <div className="fade-up d4" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 12, marginBottom: 16 }}>
@@ -373,8 +430,11 @@ export default function RatePage() {
                 <button onClick={reset} style={{ flex: 1, minWidth: 200, height: 48, borderRadius: 8, background: "#3b82f6", color: "white", fontSize: 15, fontWeight: 700, border: "none", cursor: "pointer" }}>
                   Rate Another Car
                 </button>
-                <button style={{ flex: 1, minWidth: 200, height: 48, borderRadius: 8, border: "1px solid rgba(255,255,255,0.07)", background: "transparent", color: "#a1a1aa", fontSize: 14, fontWeight: 500, cursor: "pointer" }}>
-                  Share Score
+                <button
+                  onClick={handleShare}
+                  style={{ flex: 1, minWidth: 200, height: 48, borderRadius: 8, border: "1px solid rgba(255,255,255,0.07)", background: shareCopied ? "rgba(52,211,153,0.1)" : "transparent", color: shareCopied ? "#34d399" : "#a1a1aa", fontSize: 14, fontWeight: 500, cursor: "pointer", transition: "all 0.2s" }}
+                >
+                  {shareCopied ? "Copied!" : "Share Score"}
                 </button>
                 {previews.length > 0 && (
                   <ReelCard result={result} carImageSrc={previews[0]} />

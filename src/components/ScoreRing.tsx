@@ -34,7 +34,7 @@ export default function ScoreRing({ score, size = 160, strokeWidth = 8, animate 
           current = score;
           clearInterval(interval);
         }
-        setDisplayScore(Math.round(current));
+        setDisplayScore(Math.round(current * 100) / 100);
       }, 16);
       return () => clearInterval(interval);
     }, delay);
@@ -81,9 +81,9 @@ export default function ScoreRing({ score, size = 160, strokeWidth = 8, animate 
       <div className="absolute flex flex-col items-center z-10">
         <span
           className="font-black tabular-nums transition-transform group-hover:scale-110"
-          style={{ color, fontSize: size * 0.22 }}
+          style={{ color, fontSize: size * 0.18 }}
         >
-          {displayScore}
+          {displayScore.toFixed(2)}
         </span>
         <span
           className="uppercase tracking-[0.15em] font-bold"

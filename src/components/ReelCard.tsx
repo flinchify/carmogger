@@ -13,8 +13,11 @@ interface ScoreResult {
   money: number;
   demand: number;
   hype: number;
+  interior: number;
+  sound: number;
   carmogScore: number;
   roast: string;
+  detailed_breakdown?: Record<string, string>;
 }
 
 interface ReelCardProps {
@@ -28,6 +31,8 @@ const CATEGORIES = [
   { key: "money", label: "MONEY" },
   { key: "demand", label: "DEMAND" },
   { key: "hype", label: "HYPE" },
+  { key: "interior", label: "INTERIOR" },
+  { key: "sound", label: "SOUND" },
 ] as const;
 
 function getBarColor(value: number): string {
@@ -61,6 +66,12 @@ export default function ReelCard({ result, carImageSrc }: ReelCardProps) {
   const scoreLabel = getScoreLabel(result.carmogScore);
   const scoreColor = getScoreColor(result.carmogScore);
 
+  // Get top 2-3 categories by score for detailed breakdown display
+  const topCategories = [...CATEGORIES]
+    .map((c) => ({ ...c, value: result[c.key] as number }))
+    .sort((a, b) => b.value - a.value)
+    .slice(0, 3);
+
   return (
     <>
       {/* Hidden off-screen card for rendering */}
@@ -76,13 +87,13 @@ export default function ReelCard({ result, carImageSrc }: ReelCardProps) {
             fontFamily: "'Space Grotesk', sans-serif",
           }}
         >
-          {/* Car image - top 40% */}
-          <div style={{ position: "relative", width: 1080, height: 768 }}>
+          {/* Car image - top portion */}
+          <div style={{ position: "relative", width: 1080, height: 660 }}>
             <img
               src={carImageSrc}
               alt="Car"
               crossOrigin="anonymous"
-              style={{ width: 1080, height: 768, objectFit: "cover", display: "block" }}
+              style={{ width: 1080, height: 660, objectFit: "cover", display: "block" }}
             />
             {/* Gradient fade at bottom of image */}
             <div style={{
@@ -104,20 +115,20 @@ export default function ReelCard({ result, carImageSrc }: ReelCardProps) {
             {/* Giant score */}
             <div style={{
               fontFamily: "'Outfit', sans-serif",
-              fontSize: 180,
+              fontSize: 150,
               fontWeight: 900,
               color: "white",
               lineHeight: 1,
               letterSpacing: "-4px",
               textShadow: `0 0 80px ${scoreColor}40`,
             }}>
-              {result.carmogScore}
+              {result.carmogScore.toFixed(2)}
             </div>
 
             {/* Score label */}
             <div style={{
               fontFamily: "'Space Mono', monospace",
-              fontSize: 28,
+              fontSize: 26,
               fontWeight: 700,
               color: scoreColor,
               textTransform: "uppercase" as const,
@@ -130,10 +141,10 @@ export default function ReelCard({ result, carImageSrc }: ReelCardProps) {
             {/* Car name */}
             <div style={{
               fontFamily: "'Outfit', sans-serif",
-              fontSize: 38,
+              fontSize: 34,
               fontWeight: 800,
               color: "white",
-              marginTop: 28,
+              marginTop: 20,
               textAlign: "center" as const,
               lineHeight: 1.2,
             }}>
@@ -141,15 +152,15 @@ export default function ReelCard({ result, carImageSrc }: ReelCardProps) {
             </div>
 
             {/* Score bars */}
-            <div style={{ width: "100%", marginTop: 48, display: "flex", flexDirection: "column", gap: 24 }}>
+            <div style={{ width: "100%", marginTop: 32, display: "flex", flexDirection: "column", gap: 16 }}>
               {CATEGORIES.map(({ key, label }) => {
-                const value = result[key];
+                const value = result[key] as number;
                 const barColor = getBarColor(value);
                 return (
                   <div key={key} style={{ display: "flex", alignItems: "center", gap: 20 }}>
                     <div style={{
                       fontFamily: "'Space Mono', monospace",
-                      fontSize: 18,
+                      fontSize: 16,
                       fontWeight: 700,
                       color: "#52525b",
                       textTransform: "uppercase" as const,
@@ -158,36 +169,58 @@ export default function ReelCard({ result, carImageSrc }: ReelCardProps) {
                     }}>
                       {label}
                     </div>
-                    <div style={{ flex: 1, height: 28, borderRadius: 14, background: "rgba(255,255,255,0.06)", overflow: "hidden", position: "relative" }}>
+                    <div style={{ flex: 1, height: 22, borderRadius: 11, background: "rgba(255,255,255,0.06)", overflow: "hidden", position: "relative" }}>
                       <div style={{
                         width: `${value}%`,
                         height: "100%",
-                        borderRadius: 14,
+                        borderRadius: 11,
                         background: `linear-gradient(90deg, ${barColor}cc, ${barColor})`,
                         boxShadow: `0 0 20px ${barColor}40`,
                       }} />
                     </div>
                     <div style={{
                       fontFamily: "'Space Mono', monospace",
-                      fontSize: 22,
+                      fontSize: 18,
                       fontWeight: 700,
                       color: "white",
-                      width: 50,
+                      width: 60,
                       textAlign: "right" as const,
                     }}>
-                      {value}
+                      {value.toFixed(1)}
                     </div>
                   </div>
                 );
               })}
             </div>
 
+            {/* Top category breakdowns */}
+            {result.detailed_breakdown && (
+              <div style={{ width: "100%", marginTop: 28, display: "flex", flexDirection: "column", gap: 10 }}>
+                {topCategories.map(({ key, label }) => {
+                  const breakdown = result.detailed_breakdown?.[key];
+                  if (!breakdown) return null;
+                  return (
+                    <div key={key} style={{
+                      fontFamily: "'Space Grotesk', sans-serif",
+                      fontSize: 17,
+                      lineHeight: 1.4,
+                      color: "#71717a",
+                      padding: "0 10px",
+                    }}>
+                      <span style={{ color: "#a1a1aa", fontWeight: 700 }}>{label}:</span>{" "}
+                      {breakdown.length > 80 ? breakdown.slice(0, 80) + "…" : breakdown}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
             {/* Verdict/roast */}
             <div style={{
-              marginTop: 48,
+              marginTop: 28,
               fontFamily: "'Space Grotesk', sans-serif",
-              fontSize: 22,
-              lineHeight: 1.6,
+              fontSize: 20,
+              lineHeight: 1.5,
               color: "#a1a1aa",
               textAlign: "center" as const,
               padding: "0 20px",

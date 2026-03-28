@@ -22,7 +22,7 @@ export default function ScoreBar({ label, value, delay = 0 }: ScoreBarProps) {
     <div className="space-y-1.5">
       <div className="flex justify-between items-center">
         <span className="text-sm font-medium text-[var(--text-secondary)] uppercase tracking-wider">{label}</span>
-        <span className="text-sm font-bold tabular-nums" style={{ color }}>{value}</span>
+        <span className="text-sm font-bold tabular-nums" style={{ color }}>{value.toFixed(1)}</span>
       </div>
       <div className="h-2 rounded-full bg-white/[0.04] overflow-hidden">
         <div
