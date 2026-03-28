@@ -38,9 +38,8 @@ export default function Footer() {
         <div className="ctr" style={{ paddingTop: 16, paddingBottom: 16, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <p className="mono" style={{ fontSize: 11, color: "#3f3f46" }}>&copy; 2026 CarMogger</p>
           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-            <a href="https://x.com/carmogger" target="_blank" rel="noopener" style={{ fontSize: 11, color: "#3f3f46", textDecoration: "none" }}>X</a>
-            <a href="https://instagram.com/carmogger" target="_blank" rel="noopener" style={{ fontSize: 11, color: "#3f3f46", textDecoration: "none" }}>Instagram</a>
-            <a href="https://tiktok.com/@carmogger" target="_blank" rel="noopener" style={{ fontSize: 11, color: "#3f3f46", textDecoration: "none" }}>TikTok</a>
+            <a href="https://www.instagram.com/carmoggerai" target="_blank" rel="noopener" style={{ fontSize: 11, color: "#3f3f46", textDecoration: "none" }}>Instagram</a>
+            <a href="https://www.tiktok.com/@carmoggerai" target="_blank" rel="noopener" style={{ fontSize: 11, color: "#3f3f46", textDecoration: "none" }}>TikTok</a>
           </div>
         </div>
       </div>
