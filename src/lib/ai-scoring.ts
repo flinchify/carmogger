@@ -77,42 +77,51 @@ export interface CarScore {
 }
 
 export async function scoreCarImage(imageBase64: string, mimeType: string): Promise<CarScore> {
-  const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) throw new Error("GEMINI_API_KEY not set");
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) throw new Error("ANTHROPIC_API_KEY not set");
 
-  const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        contents: [
-          {
-            parts: [
-              { text: SCORING_PROMPT },
-              { inlineData: { mimeType, data: imageBase64 } },
-            ],
-          },
-        ],
-        generationConfig: {
-          temperature: 0.3,
-          topP: 0.8,
-          responseMimeType: "application/json",
+  const mediaType = mimeType === "image/png" ? "image/png" : mimeType === "image/webp" ? "image/webp" : mimeType === "image/gif" ? "image/gif" : "image/jpeg";
+
+  const response = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": apiKey,
+      "anthropic-version": "2023-06-01",
+    },
+    body: JSON.stringify({
+      model: "claude-sonnet-4-20250514",
+      max_tokens: 2048,
+      temperature: 0.3,
+      messages: [
+        {
+          role: "user",
+          content: [
+            {
+              type: "image",
+              source: { type: "base64", media_type: mediaType, data: imageBase64 },
+            },
+            { type: "text", text: SCORING_PROMPT },
+          ],
         },
-      }),
-    }
-  );
+      ],
+    }),
+  });
 
   if (!response.ok) {
     const err = await response.text();
-    throw new Error(`Gemini API error: ${response.status} ${err}`);
+    throw new Error(`Claude API error: ${response.status} ${err}`);
   }
 
   const data = await response.json();
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-  if (!text) throw new Error("No response from Gemini");
+  const text = data.content?.[0]?.text;
+  if (!text) throw new Error("No response from Claude");
 
-  const parsed = JSON.parse(text);
+  // Extract JSON from response (Claude may wrap it in markdown code blocks)
+  const jsonMatch = text.match(/\{[\s\S]*\}/);
+  if (!jsonMatch) throw new Error("No valid JSON in Claude response");
+
+  const parsed = JSON.parse(jsonMatch[0]);
   const carmogScore = Math.round(
     parsed.aura * 0.25 + parsed.larp * 0.20 + parsed.money * 0.20 + parsed.demand * 0.20 + parsed.hype * 0.15
   );
