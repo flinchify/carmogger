@@ -7,6 +7,13 @@ import crypto from "crypto";
 
 export async function POST(req: NextRequest) {
   try {
+    // Admin-only: check for admin cookie
+    const adminSecret = process.env.ADMIN_SECRET;
+    const adminCookie = req.cookies.get("carmog_admin")?.value;
+    if (!adminSecret || adminCookie !== adminSecret) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const formData = await req.formData();
     const files = formData.getAll("images") as File[];
 

@@ -63,13 +63,30 @@ export default function RatePage() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
   const [showAuth, setShowAuth] = useState(false);
   const [shareCopied, setShareCopied] = useState(false);
+  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
 
   useEffect(() => {
+    // Check admin cookie
+    const hasAdmin = document.cookie.includes("carmog_admin=");
+    if (!hasAdmin) {
+      window.location.href = "/admin";
+      return;
+    }
+    setIsAdmin(true);
+
     fetch("/api/auth/me")
       .then((r) => r.json())
       .then((d) => setIsLoggedIn(!!d?.user))
       .catch(() => setIsLoggedIn(false));
   }, []);
+
+  if (isAdmin === null) {
+    return (
+      <div style={{ width: "100%", minHeight: "100vh", background: "#0a0a0b", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <p style={{ color: "#52525b", fontSize: 14 }}>Loading...</p>
+      </div>
+    );
+  }
 
   const handleFiles = useCallback((files: FileList | File[]) => {
     const fileArray = Array.from(files).slice(0, 4);
