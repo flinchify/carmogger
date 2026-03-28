@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "CarMogger — AI Car Ratings",
+  title: "CarMogger",
   description: "Upload your car. Get an AI-powered rating across Aura, Larp, Money, Demand and Hype. Compete on the global leaderboard.",
   keywords: ["car rating", "car mog", "car score", "car community", "AI car rating"],
   metadataBase: new URL("https://carmogger.com"),
